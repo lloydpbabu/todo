@@ -3,21 +3,41 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Todo;
 
-class helloController extends Controller
+class todoController extends Controller
 {
-    //
-    public function index($name1)
+    public function save(Request $request)
     {
-        echo "<h1>Greetings ".$name1."! Have a good day!</h1>";
+        $todo= new Todo;
+        $todo->task=$request->task;
+        $todo->save();
+
     }
-    public function index2($name1,$name2)
+    public function view()
     {
-        echo "Good job".$name1." and ".$name2."!";
+        $todo=new Todo;
+        $todos=$todo->all();
+        return view('show',['todos'=>$todos]);
     }
-    public function add(Request $request)
+    public function delete($id)
     {
-$sum= $request->number1+$request->number2;
-return view('ans',['result'=>$sum]);
+        $todo= Todo::find($id);
+        $todo->delete();
+        return back();
+        
     }
+    public function edit($id)
+    {
+        $todo=Todo::find($id);
+        return view('edit',['todo'=>$todo]);
+            }
+            public function update(Request $request)
+            {
+                $todo= Todo::find($request->id);
+        $todo->task=$request->task;
+        $todo->desc=$request->desc;
+                $todo->save();
+               
+            }
 }
